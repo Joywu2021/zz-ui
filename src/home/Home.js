@@ -44,7 +44,6 @@ function Home() {
         });
     }
 
-    console.log("env file", process.env.REACT_APP_API_URL_LOCAL);
     const GetFileList = () => {
         // setIsLoading(true);
         axios
@@ -56,6 +55,14 @@ function Home() {
                     console.log("get file number");
                     setFilesNum(response.data.files.length);
                 }
+            });
+            //For test 
+        axios
+            .get(process.env.REACT_APP_API_URL_LOCAL + "/", {
+                responseType: "json",
+            })
+            .then(function (response) {
+                console.log("TEST UPLOAD SERVER", response.data);
             });
     }
 
