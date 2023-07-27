@@ -56,7 +56,10 @@ function Home() {
                     setFilesNum(response.data.files.length);
                 }
             });
-            //For test 
+    }
+
+    useEffect(() => {
+        //For test 
         axios
             .get(process.env.REACT_APP_API_URL_LOCAL + "/", {
                 responseType: "json",
@@ -64,9 +67,6 @@ function Home() {
             .then(function (response) {
                 console.log("TEST UPLOAD SERVER", response.data);
             });
-    }
-
-    useEffect(() => {
         if (fileNum !== 0) {
             const intervalCall = setInterval(() => {
                 GetFileList();
