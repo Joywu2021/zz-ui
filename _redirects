@@ -1,5 +1,5 @@
-/list   /                           301
+/list   /list/list.js                           
 
-/aboutus  /                            301
+/aboutus  /aboutus/aboutus.js                            
 
-/profile  /                            301
+/login  /login/login.js
