@@ -7,7 +7,7 @@ import Card from 'react-bootstrap/Card';
 function Home() {
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [isSelected, setIsSelected] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    // const [isLoading, setIsLoading] = useState(false);
     const [fileNum, setFilesNum] = useState(0);
     const [inputQuery, setInputQuery] = useState("");
     // const [counter, setCounter] = useState(0);
@@ -46,7 +46,7 @@ function Home() {
 
     console.log("env file", process.env.REACT_APP_API_URL_LOCAL);
     const GetFileList = () => {
-        setIsLoading(true);
+        // setIsLoading(true);
         axios
             .get(process.env.REACT_APP_API_URL_LOCAL + "/getUploadedFileList", {
                 responseType: "json",
