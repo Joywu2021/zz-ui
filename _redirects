@@ -1,1 +1,5 @@
-/list /anoutus /profile /payment /login /create
+/list  /                            302
+
+/aboutus  /                            303
+
+/profile  /                            304
