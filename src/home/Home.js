@@ -11,7 +11,9 @@ function Home() {
     const [inputQuery, setInputQuery] = useState("");
     // const [counter, setCounter] = useState(0);
     // const [countOfProgess, setCountOfProgess] = useState(0);
-    console.log("process.env.REACT_APP_API_URL_LOCAL ", process.env.REACT_APP_API_URL_LOCAL );
+    const [ queryResult, setQueryResult] = useState("");
+    console.log("xxxxx", queryResult);
+
     const changeHandler = (event) => {
         setIsSelected(true);
         const chosenFiles = Array.prototype.slice.call(event.target.files)
@@ -42,8 +44,6 @@ function Home() {
     }
 
     const handleSubmission = () => {
-        // setCounter(0);
-        // setCountOfProgess(0);
         // setIsLoading(true);
         selectedFiles.forEach(element => {
             const formData = new FormData();
@@ -56,9 +56,41 @@ function Home() {
         setInputQuery(event.target.value);
     }
 
+    const postQuery = (input) => {
+        let data = {
+            "inputQuery": input,
+        }
+        fetch("/api", {
+             method: "POST",
+                mode: "cors",
+                cache: "no-cache",
+                credentials: "same-origin",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                redirect: "follow",
+                referrerPolicy: "no-referrer",
+                body: JSON.stringify(data)
+        })
+        .then(function (response){ 
+            if(response.ok) {  
+                response.json() 
+                .then(function(response) {
+                    console.log("test Query POST api response",response);
+                    setQueryResult(response.queryResult);
+                });
+            }
+            else {
+                throw Error('Something went wrong');
+            }
+        })
+        .catch(function(error) {
+            console.log(error);
+        });
+      }
+
     const handleQuerySubmit = () => {
-        console.log("handle submit", inputQuery);
-        setInputQuery("");
+        postQuery(inputQuery);
     }
 
     return (
@@ -112,7 +144,7 @@ function Home() {
                                     </Form.Label>
                                     <Form.Control as="textarea" rows={2} onChange={handleQueryChange} />
                                     <Form.Text id="passwordHelpBlock" muted>
-                                        Query example: What is the average age of professors who teach Mathematics in weekly schedule?
+                                        Query example: What is the revenue of 2020?
                                     </Form.Text>
                                     <br></br>
                                     <div style={{ display: "flex" , paddingTop:"10px"}}>
@@ -130,7 +162,10 @@ function Home() {
                     </Card>
                     <h4 style={{ marginTop: "40px" }}>Result: </h4>
                     <Card>
-                        <Card.Body/>
+                        <Card.Body>
+                        {queryResult}
+                        </Card.Body>
+
                     </Card>
 
                 </header>
