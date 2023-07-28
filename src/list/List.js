@@ -24,13 +24,13 @@ function List() {
     //         });
     // }
 
-    async function deleteFiles(id) {
-        const response = await axios.delete(process.env.REACT_APP_API_URL_LOCAL + "/delete/" + id + "?_method=DELETE", {});
-        if (response.data.files) {
-            window.location = '/list';
-            window.location.reload();
-        }
-    }
+    // async function deleteFiles(id) {
+    //     const response = await axios.delete(process.env.REACT_APP_API_URL_LOCAL + "/delete/" + id + "?_method=DELETE", {});
+    //     if (response.data.files) {
+    //         window.location = '/list';
+    //         window.location.reload();
+    //     }
+    // }
 
     // const handleDelete = (id) => {
     //     deleteFiles(id);
