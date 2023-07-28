@@ -32,9 +32,9 @@ function List() {
         }
     }
 
-    const handleDelete = (id) => {
-        deleteFiles(id);
-    }
+    // const handleDelete = (id) => {
+    //     deleteFiles(id);
+    // }
 
     return (
         <div className="App">
