@@ -1,28 +1,29 @@
-import React from 'react';
-// import axios from 'axios';
+import React, { useEffect } from 'react';
+import axios from 'axios';
 import { Container } from 'react-bootstrap';
 
 function List() {
     // const [selectedFiles, setSelectedFiles] = useState([]);
     // const [isLoading, setIsLoading] = useState(false);
 
-    // useEffect(() => {
-    //     GetFileList();
-    // }, []);
+    useEffect(() => {
+        GetFileList();
+    }, []);
 
-    // const GetFileList = () => {
-    //     setIsLoading(true);
-    //     axios
-    //         .get(process.env.REACT_APP_API_URL_LOCAL + "/getUploadedFileList", {
-    //             responseType: "json",
-    //         })
-    //         .then(function (response) {
-    //             if (response.data.files) {
-    //                 setSelectedFiles(response.data.files);
-    //                 setIsLoading(false);
-    //             }
-    //         });
-    // }
+    const GetFileList = () => {
+        // setIsLoading(true);
+        axios
+            .get(process.env.REACT_APP_API_URL_LOCAL + "/", {
+                responseType: "json",
+            })
+            .then(function (response) {
+                console.log("zhangbo response", response.data);
+                // if (response.data.files) {
+                //     setSelectedFiles(response.data.files);
+                //     setIsLoading(false);
+                // }
+            });
+    }
 
     // async function deleteFiles(id) {
     //     const response = await axios.delete(process.env.REACT_APP_API_URL_LOCAL + "/delete/" + id + "?_method=DELETE", {});
