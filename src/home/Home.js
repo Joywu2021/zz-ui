@@ -1,18 +1,62 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Container } from 'react-bootstrap';
 import axios from 'axios';
 import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
+import Spinner from 'react-bootstrap/Spinner';
 
 function Home() {
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [isSelected, setIsSelected] = useState(false);
-    // const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [inputQuery, setInputQuery] = useState("");
-    // const [counter, setCounter] = useState(0);
-    // const [countOfProgess, setCountOfProgess] = useState(0);
+    const [counter, setCounter] = useState(0);
+    const [logResult, setLogResult] = useState("");
     const [ queryResult, setQueryResult] = useState("");
-    console.log("xxxxx", queryResult);
+
+    const postLogQuery = () => {
+        let data = {
+            "inputQuery": "frontend_log",
+        }
+        fetch("/api", {
+             method: "POST",
+                mode: "cors",
+                cache: "no-cache",
+                credentials: "same-origin",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                redirect: "follow",
+                referrerPolicy: "no-referrer",
+                body: JSON.stringify(data)
+        })
+        .then(function (response){ 
+            if(response.ok) {  
+                response.json() 
+                .then(function(response) {
+                    console.log("test LOG response",response);
+                    setLogResult((logResult) => logResult + response.queryResult);
+                });
+            }
+            else {
+                throw Error('Something went wrong');
+            }
+        })
+        .catch(function(error) {
+            console.log(error);
+        });
+      }
+
+    useEffect(() => {
+        if(inputQuery !== "" && isLoading && counter > -1) {
+            console.log("start log api ", inputQuery, isLoading);
+            setTimeout(() => {
+                postLogQuery();
+                setCounter(counter + 1);
+            }, 4000);
+        }
+        // clearInterval(VAR)
+    }, [inputQuery, isLoading, counter]);
 
     const changeHandler = (event) => {
         setIsSelected(true);
@@ -58,7 +102,7 @@ function Home() {
 
     const postQuery = (input) => {
         let data = {
-            "inputQuery": input,
+            "inputQuery": "frontend_query " + input,
         }
         fetch("/api", {
              method: "POST",
@@ -78,9 +122,11 @@ function Home() {
                 .then(function(response) {
                     console.log("test Query POST api response",response);
                     setQueryResult(response.queryResult);
+                    setIsLoading(false);
                 });
             }
             else {
+                setIsLoading(false);
                 throw Error('Something went wrong');
             }
         })
@@ -90,6 +136,9 @@ function Home() {
       }
 
     const handleQuerySubmit = () => {
+        setIsLoading(true);
+        setQueryResult("");
+        setLogResult("");
         postQuery(inputQuery);
     }
 
@@ -142,7 +191,7 @@ function Home() {
                                     <Form.Label>
                                         Query:
                                     </Form.Label>
-                                    <Form.Control as="textarea" rows={2} onChange={handleQueryChange} />
+                                    <Form.Control as="textarea" rows={1} value={inputQuery} onChange={handleQueryChange} />
                                     <Form.Text id="passwordHelpBlock" muted>
                                         Query example: What is the revenue of 2020?
                                     </Form.Text>
@@ -157,17 +206,25 @@ function Home() {
                                     </div>
                                 </Form>
                             </div>
-                            
+
                         </Card.Body>
                     </Card>
-                    <h4 style={{ marginTop: "40px" }}>Result: </h4>
+                    <div style={{ display: "flex", marginTop: "40px" }}>
+                    <h4>Result: </h4> 
+                    {!isLoading && <Spinner animation="border" role="status" style={{marginLeft: "20px", marginTop: "-8px"}}>
+                        <span className="visually-hidden">Loading...</span>
+                    </Spinner>}</div>
                     <Card>
                         <Card.Body>
-                        {queryResult}
+                            {queryResult}
                         </Card.Body>
-
                     </Card>
-
+                    <h4 style={{ marginTop: "40px" }}>Log: </h4>
+                    <Card style={{ marginBottom: "50px" }}>
+                        <Card.Body>
+                            {logResult}
+                        </Card.Body>
+                    </Card>
                 </header>
             </Container>
         </div>
