@@ -8,7 +8,6 @@ function Home() {
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [isSelected, setIsSelected] = useState(false);
     // const [isLoading, setIsLoading] = useState(false);
-    const [fileNum, setFilesNum] = useState(0);
     const [inputQuery, setInputQuery] = useState("");
     // const [counter, setCounter] = useState(0);
     // const [countOfProgess, setCountOfProgess] = useState(0);
@@ -21,7 +20,6 @@ function Home() {
 
     async function uploadFiles(formData, data) {
         const response = await axios.post(process.env.REACT_APP_API_URL_LOCAL + "/upload", formData, {});
-
         if (response.data.files) {
             console.log("file uploaded", data.name);
             // fileArr[selectedFiles.findIndex((el) => el.name === data.name && el.size === data.size)]=true;
@@ -31,6 +29,16 @@ function Home() {
             // setIsLoading(false);
             // }
         }
+        // const response = await fetch('http://localhost:3500/upload-local', {
+        //     method: 'POST',
+        //     body: formData
+        // })
+        // const json = await response.json()
+        // const h2 = document.querySelector('h2')
+        // h2.textContent = `Status: ${json?.status}`
+        // const h3 = document.querySelector('h3')
+        // h3.textContent = json?.message
+        // console.log(json)
     }
 
     const handleSubmission = () => {
@@ -43,39 +51,6 @@ function Home() {
             uploadFiles(formData, element);
         });
     }
-
-    const GetFileList = () => {
-        // setIsLoading(true);
-        axios
-            .get(process.env.REACT_APP_API_URL_LOCAL + "/getUploadedFileList", {
-                responseType: "json",
-            })
-            .then(function (response) {
-                if (response.data.files) {
-                    console.log("get file number");
-                    setFilesNum(response.data.files.length);
-                }
-            });
-    }
-
-    useEffect(() => {
-        //For test 
-        axios
-            .get(process.env.REACT_APP_API_URL_LOCAL + "/", {
-                responseType: "json",
-            })
-            .then(function (response) {
-                console.log("TEST UPLOAD SERVER", response.data);
-            });
-        if (fileNum !== 0) {
-            const intervalCall = setInterval(() => {
-                GetFileList();
-            }, 5000);
-            return () => {
-                clearInterval(intervalCall);
-            };
-        }
-    }, [fileNum]);
 
     const handleQueryChange = (event) => {
         setInputQuery(event.target.value);
@@ -111,7 +86,6 @@ function Home() {
                                 <div style={{ paddingTop: "30px" }}>
                                     <div style={{ display: "flex" }}>
                                         <Button className="button" variant="info" onClick={handleSubmission} style={{ marginRight: "10px" }}>Upload</Button>
-                                        <a href="/list" style={{ paddingTop: "20px" }}>You have {fileNum} files in data center.</a>
                                     </div>
 
                                     {/* {counter === selectedFiles.length && !isLoading && counter !== 0 ? <h4>All Files Uploaded</h4> : null} */}
@@ -127,6 +101,12 @@ function Home() {
                     <h4 style={{ marginTop: "40px" }}>Step 2: </h4>
                     <Card>
                         <Card.Body>
+                            <Form.Select aria-label="select-industr" style={{ width: "300px" }}>
+                                <option>Please select industry:</option>
+                                <option value="1">Finance1</option>
+                                <option value="2">Finance2</option>
+                                <option value="3">Finance3</option>
+                            </Form.Select>
                             <Button className="button" variant="info" onClick={handleSubmission}>Prepare</Button>
                         </Card.Body>
                     </Card>
