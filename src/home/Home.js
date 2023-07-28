@@ -69,7 +69,6 @@ function Home() {
                     <Card>
                         <Card.Body>
                             <h3> Please Select Files:</h3>
-                            {/* <ProgressBar now={countOfProgess} /> */}
                             <div style={{ marginTop: "30px" }}>
                                 <input type="file" name="file" onChange={changeHandler} multiple style={{ paddingBottom: "10px" }} />
                                 {isSelected ? (
@@ -83,17 +82,10 @@ function Home() {
                                 ) :
                                     null
                                 }
-                                <div style={{ paddingTop: "30px" }}>
+                                <div style={{ paddingTop: "20px" }}>
                                     <div style={{ display: "flex" }}>
                                         <Button className="button" variant="info" onClick={handleSubmission} style={{ marginRight: "10px" }}>Upload</Button>
                                     </div>
-
-                                    {/* {counter === selectedFiles.length && !isLoading && counter !== 0 ? <h4>All Files Uploaded</h4> : null} */}
-                                    {/* {isLoading ?
-                                <>
-                                <Spinner animation="border" role="status">
-                                    <span className="visually-hidden">Loading...</span>
-                                </Spinner></> : null} */}
                                 </div>
                             </div>
                         </Card.Body>
@@ -101,13 +93,13 @@ function Home() {
                     <h4 style={{ marginTop: "40px" }}>Step 2: </h4>
                     <Card>
                         <Card.Body>
-                            <Form.Select aria-label="select-industr" style={{ width: "300px" }}>
-                                <option>Please select industry:</option>
-                                <option value="1">Finance1</option>
-                                <option value="2">Finance2</option>
-                                <option value="3">Finance3</option>
-                            </Form.Select>
-                            <Button className="button" variant="info" onClick={handleSubmission}>Prepare</Button>
+                        <Form style={{ width: "300px" }}>
+                            <Form.Label>
+                                Topic:
+                            </Form.Label>
+                            <Form.Control as="textarea" rows={1} onChange={handleQueryChange} />
+                        </Form>
+                            <Button className="button" variant="info" onClick={handleSubmission} style={{ marginTop: "30px" }}>Prepare</Button>
                         </Card.Body>
                     </Card>
                     <h4 style={{ marginTop: "40px" }}>Step 3: </h4>
@@ -123,11 +115,22 @@ function Home() {
                                         Query example: What is the average age of professors who teach Mathematics in weekly schedule?
                                     </Form.Text>
                                     <br></br>
-                                    <Button className="button" variant="info" onClick={() => handleQuerySubmit()} style={{ marginRight: "10px" }}>Submit</Button>
+                                    <div style={{ display: "flex" , paddingTop:"10px"}}>
+                                    <Button className="button" variant="info" onClick={() => handleQuerySubmit()} style={{ marginRight: "10px" }}>Submit</Button> 
+                                        <Form.Select aria-label="select-industr" style={{ width: "300px", height: "50px", marginTop: "10px" }}>
+                                        <option>Please select industry:</option>
+                                        <option value="1">Finance</option>
+                                        <option value="2">Nothing</option>
+                                    </Form.Select>
+                                    </div>
                                 </Form>
                             </div>
                             
                         </Card.Body>
+                    </Card>
+                    <h4 style={{ marginTop: "40px" }}>Result: </h4>
+                    <Card>
+                        <Card.Body/>
                     </Card>
 
                 </header>
