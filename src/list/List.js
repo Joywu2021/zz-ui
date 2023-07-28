@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import axios from 'axios';
-import { Button, Container } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 
 function List() {
-    const [selectedFiles, setSelectedFiles] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
+    // const [selectedFiles, setSelectedFiles] = useState([]);
+    // const [isLoading, setIsLoading] = useState(false);
 
     // useEffect(() => {
     //     GetFileList();
@@ -42,7 +42,7 @@ function List() {
                 <header className="App-header">
                     <h3> Uploaded Files:</h3>
                     <div style={{ marginTop: "30px" }}>
-                        {!isLoading ? (
+                        {/* {!isLoading ? (
                             selectedFiles.length !== 0 && selectedFiles.map((item, index) =>
                                 <div style={{ display: "flex", paddingBottom: "10px" }}>
                                     <div style={{ display: "flex" }}>
@@ -54,7 +54,7 @@ function List() {
                         ) :
                             null
                         }
-                        {selectedFiles.length === 0 && <h4>Empty List</h4>}
+                        {selectedFiles.length === 0 && <h4>Empty List</h4>} */}
                     </div>
                 </header>
             </Container>
