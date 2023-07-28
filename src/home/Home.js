@@ -165,7 +165,7 @@ function Home() {
                                 }
                                 <div style={{ paddingTop: "20px" }}>
                                     <div style={{ display: "flex" }}>
-                                        <Button className="button" variant="info" onClick={handleSubmission} style={{ marginRight: "10px" }}>Upload</Button>
+                                        <Button className="button" variant="info" onClick={handleSubmission} disabled={isLoading} style={{ marginRight: "10px" }}>Upload</Button>
                                     </div>
                                 </div>
                             </div>
@@ -180,7 +180,7 @@ function Home() {
                             </Form.Label>
                             <Form.Control as="textarea" rows={1} onChange={handleQueryChange} />
                         </Form>
-                            <Button className="button" variant="info" onClick={handleSubmission} style={{ marginTop: "30px" }}>Prepare</Button>
+                            <Button className="button" variant="info" onClick={handleSubmission} disabled={isLoading} style={{ marginTop: "30px" }}>Prepare</Button>
                         </Card.Body>
                     </Card>
                     <h4 style={{ marginTop: "40px" }}>Step 3: </h4>
@@ -197,7 +197,7 @@ function Home() {
                                     </Form.Text>
                                     <br></br>
                                     <div style={{ display: "flex" , paddingTop:"10px"}}>
-                                    <Button className="button" variant="info" onClick={() => handleQuerySubmit()} style={{ marginRight: "10px" }}>Submit</Button> 
+                                    <Button className="button" variant="info" onClick={() => handleQuerySubmit()} disabled={isLoading} style={{ marginRight: "10px" }}>Submit</Button> 
                                         <Form.Select aria-label="select-industr" style={{ width: "300px", height: "50px", marginTop: "10px" }}>
                                         <option>Please select industry:</option>
                                         <option value="1">Finance</option>
@@ -211,7 +211,7 @@ function Home() {
                     </Card>
                     <div style={{ display: "flex", marginTop: "40px" }}>
                     <h4>Result: </h4> 
-                    {!isLoading && <Spinner animation="border" role="status" style={{marginLeft: "20px", marginTop: "-8px"}}>
+                    {isLoading && <Spinner animation="border" role="status" style={{marginLeft: "20px", marginTop: "-8px"}}>
                         <span className="visually-hidden">Loading...</span>
                     </Spinner>}</div>
                     <Card>
