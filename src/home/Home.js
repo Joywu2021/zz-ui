@@ -11,7 +11,7 @@ function Home() {
     const [isLoading, setIsLoading] = useState(false);
     const [inputQuery, setInputQuery] = useState("");
     const [counter, setCounter] = useState(0);
-    const [logResult, setLogResult] = useState("");
+    const [logResult, setLogResult] = useState([]);
     const [ queryResult, setQueryResult] = useState("");
 
     const postLogQuery = () => {
@@ -34,8 +34,8 @@ function Home() {
             if(response.ok) {  
                 response.json() 
                 .then(function(response) {
-                    console.log("test LOG response",response);
-                    setLogResult((logResult) => logResult + response.queryResult);
+                    console.log("test LOG response >> ",response.queryResult);
+                    setLogResult((preLog) => [].concat(preLog, response.queryResult.split('\n').map((link) => <div>{link}</div>)));
                 });
             }
             else {
@@ -46,14 +46,14 @@ function Home() {
             console.log(error);
         });
       }
-
+      console.log("4. test LOG response >> ", logResult);
     useEffect(() => {
         if(inputQuery !== "" && isLoading && counter > -1) {
-            console.log("start log api ", inputQuery, isLoading);
+            //console.log("start log api ", inputQuery, isLoading);
             setTimeout(() => {
                 postLogQuery();
                 setCounter(counter + 1);
-            }, 4000);
+            }, 7000);
         }
         // clearInterval(VAR)
     }, [inputQuery, isLoading, counter]);
@@ -67,7 +67,7 @@ function Home() {
     async function uploadFiles(formData, data) {
         const response = await axios.post(process.env.REACT_APP_API_URL_LOCAL + "/upload", formData, {});
         if (response.data.files) {
-            console.log("file uploaded", data.name);
+            //console.log("file uploaded", data.name);
             // fileArr[selectedFiles.findIndex((el) => el.name === data.name && el.size === data.size)]=true;
             // setCounter(counter + 1);
             // setCountOfProgess(counter + 1);
@@ -120,8 +120,8 @@ function Home() {
             if(response.ok) {  
                 response.json() 
                 .then(function(response) {
-                    console.log("test Query POST api response",response);
-                    setQueryResult(response.queryResult);
+                    console.log("test Query POST api response",response.queryResult);
+                    setQueryResult(response.queryResult.split('\n').map((link) => <div>{link}</div>));
                     setIsLoading(false);
                 });
             }
@@ -210,7 +210,7 @@ function Home() {
                         </Card.Body>
                     </Card>
                     <div style={{ display: "flex", marginTop: "40px" }}>
-                    <h4>Result: </h4> 
+                    <h4>Result:</h4> 
                     {isLoading && <Spinner animation="border" role="status" style={{marginLeft: "20px", marginTop: "-8px"}}>
                         <span className="visually-hidden">Loading...</span>
                     </Spinner>}</div>
@@ -223,6 +223,7 @@ function Home() {
                     <Card style={{ marginBottom: "50px" }}>
                         <Card.Body>
                             {logResult}
+                            {isLoading && <Spinner animation="border" role="status" style={{ marginLeft: "3px", marginTop: "10px" }}></Spinner>}
                         </Card.Body>
                     </Card>
                 </header>
