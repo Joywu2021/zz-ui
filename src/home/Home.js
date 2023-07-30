@@ -1,17 +1,63 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Container } from 'react-bootstrap';
 import axios from 'axios';
 import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
+import Spinner from 'react-bootstrap/Spinner';
 
 function Home() {
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [isSelected, setIsSelected] = useState(false);
-    // const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [inputQuery, setInputQuery] = useState("");
-    // const [counter, setCounter] = useState(0);
-    // const [countOfProgess, setCountOfProgess] = useState(0);
-    console.log("process.env.REACT_APP_API_URL_LOCAL ", process.env.REACT_APP_API_URL_LOCAL );
+    const [counter, setCounter] = useState(0);
+    const [logResult, setLogResult] = useState([]);
+    const [ queryResult, setQueryResult] = useState("");
+
+    const postLogQuery = () => {
+        let data = {
+            "inputQuery": "frontend_log",
+        }
+        fetch("/api", {
+             method: "POST",
+                mode: "cors",
+                cache: "no-cache",
+                credentials: "same-origin",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                redirect: "follow",
+                referrerPolicy: "no-referrer",
+                body: JSON.stringify(data)
+        })
+        .then(function (response){ 
+            if(response.ok) {  
+                response.json() 
+                .then(function(response) {
+                    console.log("test LOG response >> ",response.queryResult);
+                    setLogResult((preLog) => [].concat(preLog, response.queryResult.split('\n').map((link) => <div>{link}</div>)));
+                });
+            }
+            else {
+                throw Error('Something went wrong');
+            }
+        })
+        .catch(function(error) {
+            console.log(error);
+        });
+      }
+      console.log("4. test LOG response >> ", logResult);
+    useEffect(() => {
+        if(inputQuery !== "" && isLoading && counter > -1) {
+            //console.log("start log api ", inputQuery, isLoading);
+            setTimeout(() => {
+                postLogQuery();
+                setCounter(counter + 1);
+            }, 7000);
+        }
+        // clearInterval(VAR)
+    }, [inputQuery, isLoading, counter]);
+
     const changeHandler = (event) => {
         setIsSelected(true);
         const chosenFiles = Array.prototype.slice.call(event.target.files)
@@ -21,7 +67,7 @@ function Home() {
     async function uploadFiles(formData, data) {
         const response = await axios.post(process.env.REACT_APP_API_URL_LOCAL + "/upload", formData, {});
         if (response.data.files) {
-            console.log("file uploaded", data.name);
+            //console.log("file uploaded", data.name);
             // fileArr[selectedFiles.findIndex((el) => el.name === data.name && el.size === data.size)]=true;
             // setCounter(counter + 1);
             // setCountOfProgess(counter + 1);
@@ -42,8 +88,6 @@ function Home() {
     }
 
     const handleSubmission = () => {
-        // setCounter(0);
-        // setCountOfProgess(0);
         // setIsLoading(true);
         selectedFiles.forEach(element => {
             const formData = new FormData();
@@ -56,9 +100,46 @@ function Home() {
         setInputQuery(event.target.value);
     }
 
+    const postQuery = (input) => {
+        let data = {
+            "inputQuery": "frontend_query " + input,
+        }
+        fetch("/api", {
+             method: "POST",
+                mode: "cors",
+                cache: "no-cache",
+                credentials: "same-origin",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                redirect: "follow",
+                referrerPolicy: "no-referrer",
+                body: JSON.stringify(data)
+        })
+        .then(function (response){ 
+            if(response.ok) {  
+                response.json() 
+                .then(function(response) {
+                    console.log("test Query POST api response",response.queryResult);
+                    setQueryResult(response.queryResult.split('\n').map((link) => <div>{link}</div>));
+                    setIsLoading(false);
+                });
+            }
+            else {
+                setIsLoading(false);
+                throw Error('Something went wrong');
+            }
+        })
+        .catch(function(error) {
+            console.log(error);
+        });
+      }
+
     const handleQuerySubmit = () => {
-        console.log("handle submit", inputQuery);
-        setInputQuery("");
+        setIsLoading(true);
+        setQueryResult("");
+        setLogResult("");
+        postQuery(inputQuery);
     }
 
     return (
@@ -84,7 +165,7 @@ function Home() {
                                 }
                                 <div style={{ paddingTop: "20px" }}>
                                     <div style={{ display: "flex" }}>
-                                        <Button className="button" variant="info" onClick={handleSubmission} style={{ marginRight: "10px" }}>Upload</Button>
+                                        <Button className="button" variant="info" onClick={handleSubmission} disabled={isLoading} style={{ marginRight: "10px" }}>Upload</Button>
                                     </div>
                                 </div>
                             </div>
@@ -99,7 +180,7 @@ function Home() {
                             </Form.Label>
                             <Form.Control as="textarea" rows={1} onChange={handleQueryChange} />
                         </Form>
-                            <Button className="button" variant="info" onClick={handleSubmission} style={{ marginTop: "30px" }}>Prepare</Button>
+                            <Button className="button" variant="info" onClick={handleSubmission} disabled={isLoading} style={{ marginTop: "30px" }}>Prepare</Button>
                         </Card.Body>
                     </Card>
                     <h4 style={{ marginTop: "40px" }}>Step 3: </h4>
@@ -110,13 +191,13 @@ function Home() {
                                     <Form.Label>
                                         Query:
                                     </Form.Label>
-                                    <Form.Control as="textarea" rows={2} onChange={handleQueryChange} />
+                                    <Form.Control as="textarea" rows={1} value={inputQuery} onChange={handleQueryChange} />
                                     <Form.Text id="passwordHelpBlock" muted>
-                                        Query example: What is the average age of professors who teach Mathematics in weekly schedule?
+                                        Query example: What is the revenue of 2020?
                                     </Form.Text>
                                     <br></br>
                                     <div style={{ display: "flex" , paddingTop:"10px"}}>
-                                    <Button className="button" variant="info" onClick={() => handleQuerySubmit()} style={{ marginRight: "10px" }}>Submit</Button> 
+                                    <Button className="button" variant="info" onClick={() => handleQuerySubmit()} disabled={isLoading} style={{ marginRight: "10px" }}>Submit</Button> 
                                         <Form.Select aria-label="select-industr" style={{ width: "300px", height: "50px", marginTop: "10px" }}>
                                         <option>Please select industry:</option>
                                         <option value="1">Finance</option>
@@ -125,14 +206,26 @@ function Home() {
                                     </div>
                                 </Form>
                             </div>
-                            
+
                         </Card.Body>
                     </Card>
-                    <h4 style={{ marginTop: "40px" }}>Result: </h4>
+                    <div style={{ display: "flex", marginTop: "40px" }}>
+                    <h4>Result:</h4> 
+                    {isLoading && <Spinner animation="border" role="status" style={{marginLeft: "20px", marginTop: "-8px"}}>
+                        <span className="visually-hidden">Loading...</span>
+                    </Spinner>}</div>
                     <Card>
-                        <Card.Body/>
+                        <Card.Body>
+                            {queryResult}
+                        </Card.Body>
                     </Card>
-
+                    <h4 style={{ marginTop: "40px" }}>Log: </h4>
+                    <Card style={{ marginBottom: "50px" }}>
+                        <Card.Body>
+                            {logResult}
+                            {isLoading && <Spinner animation="border" role="status" style={{ marginLeft: "3px", marginTop: "10px" }}></Spinner>}
+                        </Card.Body>
+                    </Card>
                 </header>
             </Container>
         </div>
